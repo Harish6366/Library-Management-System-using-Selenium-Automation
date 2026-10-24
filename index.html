@@ -1,0 +1,1877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-role {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav li {
+            margin-left: 20px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        
+        nav a:hover, nav a.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .card h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .card .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2575fc;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 22px;
+            color: #333;
+        }
+        
+        .btn {
+            background: #2575fc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #1a68e8;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .btn-success {
+            background: #28a745;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .status-available {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .status-borrowed {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90%;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6c757d;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-bar {
+            margin-bottom: 10px;
+            padding-inline: 30px;
+        }
+        
+        .search-bar input {
+            width: 300px;
+            max-width: 100%;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+            color: #6c757d;
+        }
+        
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        }
+        
+        .login-box {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .login-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 24px;
+        }
+        
+        .role-selector {
+            display: flex;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+        
+        .role-option {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            background: #f8f9fa;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .role-option.active {
+            background: #2575fc;
+            color: white;
+        }
+        
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .book-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .book-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+            height: 50px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-clamp: 2;
+        }
+        
+        .book-author {
+            color: #666;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+        
+        .book-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .book-genre {
+            display: inline-block;
+            background: #e9ecef;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #495057;
+        }
+        
+        .book-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .book-cover {
+            height: 180px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .toggle-btn {
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .toggle-btn.active {
+            background: #2575fc;
+            color: white;
+            border-color: #2575fc;
+        }
+        
+        .password-info {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 15px;
+                justify-content: center;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .books-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // Sample book data with different genres
+        const sampleBooks = [
+            { id: '1', title: 'To Kill a Mockingbird', author: 'Harper Lee', isbn: '9780061120084', publicationYear: '1960', category: 'Classic', totalCopies: 5, availableCopies: 3 },
+            { id: '2', title: '1984', author: 'George Orwell', isbn: '9780451524935', publicationYear: '1949', category: 'Dystopian', totalCopies: 4, availableCopies: 2 },
+            { id: '3', title: 'Pride and Prejudice', author: 'Jane Austen', isbn: '9780141439518', publicationYear: '1813', category: 'Romance', totalCopies: 6, availableCopies: 4 },
+            { id: '4', title: 'The Great Gatsby', author: 'F. Scott Fitzgerald', isbn: '9780743273565', publicationYear: '1925', category: 'Classic', totalCopies: 5, availableCopies: 5 },
+            { id: '5', title: 'Harry Potter and the Sorcerer\'s Stone', author: 'J.K. Rowling', isbn: '9780590353427', publicationYear: '1997', category: 'Fantasy', totalCopies: 8, availableCopies: 6 },
+            { id: '6', title: 'The Hobbit', author: 'J.R.R. Tolkien', isbn: '9780547928227', publicationYear: '1937', category: 'Fantasy', totalCopies: 4, availableCopies: 2 },
+            { id: '7', title: 'The Catcher in the Rye', author: 'J.D. Salinger', isbn: '9780316769174', publicationYear: '1951', category: 'Coming-of-age', totalCopies: 3, availableCopies: 1 },
+            { id: '8', title: 'The Lord of the Rings', author: 'J.R.R. Tolkien', isbn: '9780544003415', publicationYear: '1954', category: 'Fantasy', totalCopies: 5, availableCopies: 3 },
+            { id: '9', title: 'The Da Vinci Code', author: 'Dan Brown', isbn: '9780307474278', publicationYear: '2003', category: 'Mystery', totalCopies: 7, availableCopies: 5 },
+            { id: '10', title: 'The Alchemist', author: 'Paulo Coelho', isbn: '9780061122415', publicationYear: '1988', category: 'Philosophical', totalCopies: 6, availableCopies: 4 },
+            { id: '11', title: 'The Hunger Games', author: 'Suzanne Collins', isbn: '9780439023481', publicationYear: '2008', category: 'Dystopian', totalCopies: 5, availableCopies: 3 },
+            { id: '12', title: 'The Girl with the Dragon Tattoo', author: 'Stieg Larsson', isbn: '9780307949486', publicationYear: '2005', category: 'Mystery', totalCopies: 4, availableCopies: 2 },
+            { id: '13', title: 'The Shining', author: 'Stephen King', isbn: '9780307743657', publicationYear: '1977', category: 'Horror', totalCopies: 5, availableCopies: 3 },
+            { id: '14', title: 'Gone Girl', author: 'Gillian Flynn', isbn: '9780307588364', publicationYear: '2012', category: 'Thriller', totalCopies: 6, availableCopies: 4 },
+            { id: '15', title: 'The Fault in Our Stars', author: 'John Green', isbn: '9780525478812', publicationYear: '2012', category: 'Young Adult', totalCopies: 5, availableCopies: 3 },
+            { id: '16', title: 'The Book Thief', author: 'Markus Zusak', isbn: '9780375831003', publicationYear: '2005', category: 'Historical Fiction', totalCopies: 4, availableCopies: 2 },
+            { id: '17', title: 'Brave New World', author: 'Aldous Huxley', isbn: '9780060850524', publicationYear: '1932', category: 'Dystopian', totalCopies: 3, availableCopies: 1 },
+            { id: '18', title: 'The Kite Runner', author: 'Khaled Hosseini', isbn: '9781594631931', publicationYear: '2003', category: 'Drama', totalCopies: 5, availableCopies: 3 },
+            { id: '19', title: 'The Chronicles of Narnia', author: 'C.S. Lewis', isbn: '9780066238500', publicationYear: '1950', category: 'Fantasy', totalCopies: 7, availableCopies: 5 },
+            { id: '20', title: 'The Handmaid\'s Tale', author: 'Margaret Atwood', isbn: '9780385490818', publicationYear: '1985', category: 'Dystopian', totalCopies: 4, availableCopies: 2 },
+            { id: '21', title: 'The Martian', author: 'Andy Weir', isbn: '9780553418026', publicationYear: '2011', category: 'Science Fiction', totalCopies: 5, availableCopies: 3 },
+            { id: '22', title: 'Dune', author: 'Frank Herbert', isbn: '9780441172719', publicationYear: '1965', category: 'Science Fiction', totalCopies: 4, availableCopies: 2 },
+            { id: '23', title: 'The Silent Patient', author: 'Alex Michaelides', isbn: '9781250301697', publicationYear: '2019', category: 'Psychological Thriller', totalCopies: 6, availableCopies: 4 },
+            { id: '24', title: 'Where the Crawdads Sing', author: 'Delia Owens', isbn: '9780735219090', publicationYear: '2018', category: 'Mystery', totalCopies: 5, availableCopies: 3 },
+            { id: '25', title: 'Educated', author: 'Tara Westover', isbn: '9780399590504', publicationYear: '2018', category: 'Memoir', totalCopies: 4, availableCopies: 2 },
+            { id: '26', title: 'The Night Circus', author: 'Erin Morgenstern', isbn: '9780307744432', publicationYear: '2011', category: 'Fantasy', totalCopies: 5, availableCopies: 3 },
+            { id: '27', title: 'The Seven Husbands of Evelyn Hugo', author: 'Taylor Jenkins Reid', isbn: '9781501161933', publicationYear: '2017', category: 'Historical Fiction', totalCopies: 4, availableCopies: 2 },
+            { id: '28', title: 'The Midnight Library', author: 'Matt Haig', isbn: '9780525559474', publicationYear: '2020', category: 'Fiction', totalCopies: 6, availableCopies: 4 },
+            { id: '29', title: 'Project Hail Mary', author: 'Andy Weir', isbn: '9780593135204', publicationYear: '2021', category: 'Science Fiction', totalCopies: 5, availableCopies: 3 },
+            { id: '30', title: 'Klara and the Sun', author: 'Kazuo Ishiguro', isbn: '9780593318171', publicationYear: '2021', category: 'Science Fiction', totalCopies: 4, availableCopies: 2 }
+        ];
+
+        // Library Management System Component
+        const LibraryManagementSystem = () => {
+            // State management
+            const [activeTab, setActiveTab] = React.useState('dashboard');
+            const [books, setBooks] = React.useState([]);
+            const [members, setMembers] = React.useState([]);
+            const [transactions, setTransactions] = React.useState([]);
+            const [users, setUsers] = React.useState([]);
+            const [currentUser, setCurrentUser] = React.useState(null);
+            const [showBookModal, setShowBookModal] = React.useState(false);
+            const [showMemberModal, setShowMemberModal] = React.useState(false);
+            const [showLendModal, setShowLendModal] = React.useState(false);
+            const [showReturnModal, setShowReturnModal] = React.useState(false);
+            const [editingBook, setEditingBook] = React.useState(null);
+            const [editingMember, setEditingMember] = React.useState(null);
+            const [searchTerm, setSearchTerm] = React.useState('');
+            const [loginRole, setLoginRole] = React.useState('user');
+            const [viewMode, setViewMode] = React.useState('cards'); // 'cards' or 'table'
+            const [sampleBooksLoaded, setSampleBooksLoaded] = React.useState(false);
+            
+            // Form states
+            const [bookForm, setBookForm] = React.useState({
+                title: '',
+                author: '',
+                isbn: '',
+                publicationYear: '',
+                category: '',
+                totalCopies: 1
+            });
+            
+            const [memberForm, setMemberForm] = React.useState({
+                name: '',
+                email: '',
+                phone: '',
+                address: '',
+                password: ''
+            });
+            
+            const [lendForm, setLendForm] = React.useState({
+                bookId: '',
+                memberId: '',
+                dueDate: ''
+            });
+            
+            const [loginForm, setLoginForm] = React.useState({
+                username: '',
+                password: ''
+            });
+            
+            // Load data from localStorage on component mount
+            React.useEffect(() => {
+                const storedBooks = JSON.parse(localStorage.getItem('libraryBooks')) || [];
+                const storedMembers = JSON.parse(localStorage.getItem('libraryMembers')) || [];
+                const storedTransactions = JSON.parse(localStorage.getItem('libraryTransactions')) || [];
+                const storedUsers = JSON.parse(localStorage.getItem('libraryUsers')) || [];
+                const storedSampleBooksLoaded = JSON.parse(localStorage.getItem('sampleBooksLoaded')) || false;
+                
+                // If no users exist, create default admin and user accounts
+                if (storedUsers.length === 0) {
+                    const defaultUsers = [
+                        { id: '1', username: 'admin', password: 'admin123', role: 'admin', name: 'System Administrator' },
+                        { id: '2', username: 'user', password: 'user123', role: 'user', name: 'Regular User' }
+                    ];
+                    localStorage.setItem('libraryUsers', JSON.stringify(defaultUsers));
+                    setUsers(defaultUsers);
+                } else {
+                    setUsers(storedUsers);
+                }
+                
+                // If sample books haven't been loaded yet, add them to existing books
+                if (!storedSampleBooksLoaded) {
+                    const updatedBooks = [...storedBooks];
+                    
+                    // Add sample books only if they don't already exist
+                    sampleBooks.forEach(sampleBook => {
+                        const existingBook = updatedBooks.find(book => book.isbn === sampleBook.isbn);
+                        if (!existingBook) {
+                            updatedBooks.push(sampleBook);
+                        }
+                    });
+                    
+                    localStorage.setItem('libraryBooks', JSON.stringify(updatedBooks));
+                    localStorage.setItem('sampleBooksLoaded', JSON.stringify(true));
+                    setBooks(updatedBooks);
+                    setSampleBooksLoaded(true);
+                } else {
+                    setBooks(storedBooks);
+                }
+                
+                setMembers(storedMembers);
+                setTransactions(storedTransactions);
+            }, []);
+            
+            // Save data to localStorage whenever state changes
+            React.useEffect(() => {
+                localStorage.setItem('libraryBooks', JSON.stringify(books));
+            }, [books]);
+            
+            React.useEffect(() => {
+                localStorage.setItem('libraryMembers', JSON.stringify(members));
+            }, [members]);
+            
+            React.useEffect(() => {
+                localStorage.setItem('libraryTransactions', JSON.stringify(transactions));
+            }, [transactions]);
+            
+            React.useEffect(() => {
+                localStorage.setItem('libraryUsers', JSON.stringify(users));
+            }, [users]);
+            
+            // Function to load sample books manually
+            const loadSampleBooks = () => {
+                const updatedBooks = [...books];
+                
+                // Add sample books only if they don't already exist
+                sampleBooks.forEach(sampleBook => {
+                    const existingBook = updatedBooks.find(book => book.isbn === sampleBook.isbn);
+                    if (!existingBook) {
+                        updatedBooks.push(sampleBook);
+                    }
+                });
+                
+                setBooks(updatedBooks);
+                localStorage.setItem('sampleBooksLoaded', JSON.stringify(true));
+                alert('Sample books loaded successfully!');
+            };
+            
+            // Authentication functions
+            const handleLogin = () => {
+                const user = users.find(u => 
+                    u.username === loginForm.username && 
+                    u.password === loginForm.password
+                );
+                
+                if (user) {
+                    setCurrentUser(user);
+                    setLoginForm({ username: '', password: '' });
+                } else {
+                    alert('Invalid credentials');
+                }
+            };
+            
+            const handleLogout = () => {
+                setCurrentUser(null);
+                setActiveTab('dashboard');
+            };
+            
+            // Book CRUD operations
+            const handleAddBook = () => {
+                if (editingBook) {
+                    // Update existing book
+                    const updatedBooks = books.map(book => 
+                        book.id === editingBook.id ? { ...bookForm, id: editingBook.id, availableCopies: bookForm.totalCopies } : book
+                    );
+                    setBooks(updatedBooks);
+                } else {
+                    // Add new book
+                    const newBook = {
+                        ...bookForm,
+                        id: Date.now().toString(),
+                        availableCopies: bookForm.totalCopies
+                    };
+                    setBooks([...books, newBook]);
+                }
+                setShowBookModal(false);
+                resetBookForm();
+            };
+            
+            const handleEditBook = (book) => {
+                setEditingBook(book);
+                setBookForm({
+                    title: book.title,
+                    author: book.author,
+                    isbn: book.isbn,
+                    publicationYear: book.publicationYear,
+                    category: book.category,
+                    totalCopies: book.totalCopies
+                });
+                setShowBookModal(true);
+            };
+            
+            const handleDeleteBook = (id) => {
+                if (window.confirm('Are you sure you want to delete this book?')) {
+                    const updatedBooks = books.filter(book => book.id !== id);
+                    setBooks(updatedBooks);
+                    
+                    // Also remove any transactions for this book
+                    const updatedTransactions = transactions.filter(
+                        transaction => transaction.bookId !== id
+                    );
+                    setTransactions(updatedTransactions);
+                }
+            };
+            
+            const resetBookForm = () => {
+                setBookForm({
+                    title: '',
+                    author: '',
+                    isbn: '',
+                    publicationYear: '',
+                    category: '',
+                    totalCopies: 1
+                });
+                setEditingBook(null);
+            };
+            
+            // Member CRUD operations
+            const handleAddMember = () => {
+                // Check if email already exists in users
+                const existingUser = users.find(user => user.username === memberForm.email);
+                if (existingUser) {
+                    alert('A user with this email already exists. Please use a different email.');
+                    return;
+                }
+
+                if (editingMember) {
+                    // Update existing member
+                    const updatedMembers = members.map(member => 
+                        member.id === editingMember.id ? { ...memberForm, id: editingMember.id } : member
+                    );
+                    setMembers(updatedMembers);
+                    
+                    // Also update the user if password is provided
+                    if (memberForm.password) {
+                        const updatedUsers = users.map(user => 
+                            user.username === editingMember.email ? { ...user, password: memberForm.password } : user
+                        );
+                        setUsers(updatedUsers);
+                    }
+                } else {
+                    // Add new member
+                    const newMember = {
+                        ...memberForm,
+                        id: Date.now().toString()
+                    };
+                    setMembers([...members, newMember]);
+                    
+                    // Create a user account for the member
+                    const newUser = {
+                        id: Date.now().toString() + '_user',
+                        username: memberForm.email,
+                        password: memberForm.password || 'password123', // Default password if not provided
+                        role: 'user',
+                        name: memberForm.name
+                    };
+                    setUsers([...users, newUser]);
+                    
+                    // Show login credentials to admin
+                    if (currentUser.role === 'admin') {
+                        alert(`Member added successfully!\n\nLogin credentials for ${memberForm.name}:\nUsername: ${memberForm.email}\nPassword: ${memberForm.password || 'password123'}`);
+                    }
+                }
+                setShowMemberModal(false);
+                resetMemberForm();
+            };
+            
+            const handleEditMember = (member) => {
+                setEditingMember(member);
+                setMemberForm({
+                    name: member.name,
+                    email: member.email,
+                    phone: member.phone,
+                    address: member.address,
+                    password: '' // Don't show current password for security
+                });
+                setShowMemberModal(true);
+            };
+            
+            const handleDeleteMember = (id) => {
+                if (window.confirm('Are you sure you want to delete this member?')) {
+                    const memberToDelete = members.find(member => member.id === id);
+                    const updatedMembers = members.filter(member => member.id !== id);
+                    setMembers(updatedMembers);
+                    
+                    // Also remove any transactions for this member
+                    const updatedTransactions = transactions.filter(
+                        transaction => transaction.memberId !== id
+                    );
+                    setTransactions(updatedTransactions);
+                    
+                    // Also remove the user account
+                    if (memberToDelete) {
+                        const updatedUsers = users.filter(user => user.username !== memberToDelete.email);
+                        setUsers(updatedUsers);
+                    }
+                }
+            };
+            
+            const resetMemberForm = () => {
+                setMemberForm({
+                    name: '',
+                    email: '',
+                    phone: '',
+                    address: '',
+                    password: ''
+                });
+                setEditingMember(null);
+            };
+            
+            // Lending operations
+            const handleLendBook = () => {
+                const book = books.find(b => b.id === lendForm.bookId);
+                const member = members.find(m => m.id === lendForm.memberId);
+                
+                if (book && member && book.availableCopies > 0) {
+                    // Create transaction
+                    const newTransaction = {
+                        id: Date.now().toString(),
+                        bookId: lendForm.bookId,
+                        memberId: lendForm.memberId,
+                        bookTitle: book.title,
+                        memberName: member.name,
+                        issueDate: new Date().toISOString().split('T')[0],
+                        dueDate: lendForm.dueDate,
+                        returnDate: null
+                    };
+                    
+                    setTransactions([...transactions, newTransaction]);
+                    
+                    // Update book available copies
+                    const updatedBooks = books.map(b => 
+                        b.id === lendForm.bookId ? { ...b, availableCopies: b.availableCopies - 1 } : b
+                    );
+                    setBooks(updatedBooks);
+                    
+                    setShowLendModal(false);
+                    resetLendForm();
+                } else {
+                    alert('Book is not available for lending');
+                }
+            };
+            
+            const handleReturnBook = (transactionId) => {
+                const transaction = transactions.find(t => t.id === transactionId);
+                
+                if (transaction) {
+                    // Update transaction with return date
+                    const updatedTransactions = transactions.map(t => 
+                        t.id === transactionId ? { ...t, returnDate: new Date().toISOString().split('T')[0] } : t
+                    );
+                    setTransactions(updatedTransactions);
+                    
+                    // Update book available copies
+                    const updatedBooks = books.map(b => 
+                        b.id === transaction.bookId ? { ...b, availableCopies: b.availableCopies + 1 } : b
+                    );
+                    setBooks(updatedBooks);
+                    
+                    setShowReturnModal(false);
+                }
+            };
+            
+            const resetLendForm = () => {
+                setLendForm({
+                    bookId: '',
+                    memberId: '',
+                    dueDate: ''
+                });
+            };
+            
+            // User-specific operations
+            const handleBorrowBook = (bookId) => {
+                if (!currentUser) return;
+                
+                const book = books.find(b => b.id === bookId);
+                if (book && book.availableCopies > 0) {
+                    // Find or create a member for the current user
+                    let member = members.find(m => m.email === currentUser.username);
+                    if (!member) {
+                        member = {
+                            id: Date.now().toString(),
+                            name: currentUser.name || currentUser.username,
+                            email: currentUser.username,
+                            phone: '',
+                            address: ''
+                        };
+                        setMembers([...members, member]);
+                    }
+                    
+                    // Create transaction
+                    const newTransaction = {
+                        id: Date.now().toString(),
+                        bookId: bookId,
+                        memberId: member.id,
+                        bookTitle: book.title,
+                        memberName: member.name,
+                        issueDate: new Date().toISOString().split('T')[0],
+                        dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 14 days from now
+                        returnDate: null
+                    };
+                    
+                    setTransactions([...transactions, newTransaction]);
+                    
+                    // Update book available copies
+                    const updatedBooks = books.map(b => 
+                        b.id === bookId ? { ...b, availableCopies: b.availableCopies - 1 } : b
+                    );
+                    setBooks(updatedBooks);
+                    
+                    alert(`You have successfully borrowed "${book.title}"`);
+                } else {
+                    alert('Book is not available for borrowing');
+                }
+            };
+            
+            const handleUserReturnBook = (transactionId) => {
+                handleReturnBook(transactionId);
+                alert('Book returned successfully');
+            };
+            
+            // Filter books based on search term
+            const filteredBooks = books.filter(book => 
+                book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                book.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                book.isbn.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                book.category.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            
+            // Get user's borrowed books
+            const getUserBorrowedBooks = () => {
+                if (!currentUser) return [];
+                
+                const userMember = members.find(m => m.email === currentUser.username);
+                if (!userMember) return [];
+                
+                return transactions
+                    .filter(t => t.memberId === userMember.id && !t.returnDate)
+                    .map(t => {
+                        const book = books.find(b => b.id === t.bookId);
+                        return { ...t, book };
+                    })
+                    .filter(t => t.book); // Filter out transactions where book might have been deleted
+            };
+            
+            // Calculate statistics
+            const totalBooks = books.length;
+            const totalMembers = members.length;
+            const borrowedBooks = transactions.filter(t => !t.returnDate).length;
+            const availableBooks = books.reduce((sum, book) => sum + book.availableCopies, 0);
+            
+            // Get current date for due date validation
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Render book cards
+            const renderBookCards = (booksToRender, showAdminActions = false) => {
+                return (
+                    <div className="books-grid">
+                        {booksToRender.map(book => (
+                            <div key={book.id} className="book-card">
+                                <div className="book-cover">
+                                    {book.title}
+                                </div>
+                                <div className="book-title">{book.title}</div>
+                                <div className="book-author">by {book.author}</div>
+                                <div className="book-details">
+                                    <span>Published: {book.publicationYear}</span>
+                                    <span className="book-genre">{book.category}</span>
+                                </div>
+                                <div className="book-details">
+                                    <span>ISBN: {book.isbn}</span>
+                                    <span>
+                                        {book.availableCopies > 0 ? (
+                                            <span className="status-available">
+                                                {book.availableCopies} available
+                                            </span>
+                                        ) : (
+                                            <span className="status-borrowed">Not available</span>
+                                        )}
+                                    </span>
+                                </div>
+                                <div className="book-actions">
+                                    {showAdminActions ? (
+                                        <>
+                                            <button 
+                                                className="btn btn-secondary"
+                                                onClick={() => handleEditBook(book)}
+                                            >
+                                                Edit
+                                            </button>
+                                            <button 
+                                                className="btn btn-danger"
+                                                onClick={() => handleDeleteBook(book.id)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <button 
+                                            className="btn"
+                                            onClick={() => handleBorrowBook(book.id)}
+                                            disabled={book.availableCopies === 0}
+                                        >
+                                            Borrow Book
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                );
+            };
+            
+            // Render book table (for admin)
+            const renderBookTable = (booksToRender) => {
+                return (
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>ISBN</th>
+                                <th>Category</th>
+                                <th>Total Copies</th>
+                                <th>Available</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {booksToRender.map(book => (
+                                <tr key={book.id}>
+                                    <td>{book.title}</td>
+                                    <td>{book.author}</td>
+                                    <td>{book.isbn}</td>
+                                    <td>{book.category}</td>
+                                    <td>{book.totalCopies}</td>
+                                    <td>
+                                        {book.availableCopies > 0 ? (
+                                            <span className="status-available">
+                                                {book.availableCopies} available
+                                            </span>
+                                        ) : (
+                                            <span className="status-borrowed">All borrowed</span>
+                                        )}
+                                    </td>
+                                    <td>
+                                        <div className="action-buttons">
+                                            <button 
+                                                className="btn btn-secondary"
+                                                onClick={() => handleEditBook(book)}
+                                            >
+                                                Edit
+                                            </button>
+                                            <button 
+                                                className="btn btn-danger"
+                                                onClick={() => handleDeleteBook(book.id)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                );
+            };
+            
+            // If no user is logged in, show login screen
+            if (!currentUser) {
+                return (
+                    <div className="login-container">
+                        <div className="login-box">
+                            <h2 className="login-title">Library Management System</h2>
+                            <div style={{textAlign: 'center', marginBottom: '20px', color: '#666'}}>
+                                <p>Login with your email and password</p>
+                            </div>
+                            <div className="form-group">
+                                <label>Username/Email</label>
+                                <input 
+                                    type="text" 
+                                    value={loginForm.username}
+                                    onChange={(e) => setLoginForm({...loginForm, username: e.target.value})}
+                                    placeholder="Enter your email"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Password</label>
+                                <input 
+                                    type="password" 
+                                    value={loginForm.password}
+                                    onChange={(e) => setLoginForm({...loginForm, password: e.target.value})}
+                                    placeholder="Enter password"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <button 
+                                    className="btn" 
+                                    onClick={handleLogin}
+                                    style={{width: '100%'}}
+                                >
+                                    Login
+                                </button>
+                            </div>
+                            <div style={{textAlign: 'center', fontSize: '14px', color: '#666', marginTop: '20px'}}>
+                                <p><strong>Demo Credentials:</strong></p>
+                                <p>Admin: username: admin, password: admin123</p>
+                                <p>User: username: user, password: user123</p>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+            
+            return (
+                <div>
+                    <header>
+                        <div className="container">
+                            <div className="header-content">
+                                <div className="logo">Library Management System</div>
+                                <div className="user-info">
+                                    <span>Welcome, {currentUser.name || currentUser.username}</span>
+                                    <div className="user-role">{currentUser.role}</div>
+                                    <button className="btn btn-secondary" onClick={handleLogout}>
+                                        Logout
+                                    </button>
+                                </div>
+                            </div>
+                            <nav>
+                                <ul>
+                                    <li><a 
+                                        href="#" 
+                                        className={activeTab === 'dashboard' ? 'active' : ''}
+                                        onClick={() => setActiveTab('dashboard')}
+                                    >Dashboard</a></li>
+                                    <li><a 
+                                        href="#" 
+                                        className={activeTab === 'books' ? 'active' : ''}
+                                        onClick={() => setActiveTab('books')}
+                                    >{currentUser.role === 'admin' ? 'Books Management' : 'Browse Books'}</a></li>
+                                    {currentUser.role === 'admin' && (
+                                        <li><a 
+                                            href="#" 
+                                            className={activeTab === 'members' ? 'active' : ''}
+                                            onClick={() => setActiveTab('members')}
+                                        >Members Management</a></li>
+                                    )}
+                                    <li><a 
+                                        href="#" 
+                                        className={activeTab === 'transactions' ? 'active' : ''}
+                                        onClick={() => setActiveTab('transactions')}
+                                    >{currentUser.role === 'admin' ? 'Transactions' : 'My Books'}</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </header>
+                    
+                    <div className="container">
+                        {activeTab === 'dashboard' && (
+                            <div>
+                                <div className="dashboard">
+                                    <div className="card">
+                                        <h3>Total Books</h3>
+                                        <div className="value">{totalBooks}</div>
+                                    </div>
+                                    {currentUser.role === 'admin' && (
+                                        <div className="card">
+                                            <h3>Total Members</h3>
+                                            <div className="value">{totalMembers}</div>
+                                        </div>
+                                    )}
+                                    <div className="card">
+                                        <h3>Books Borrowed</h3>
+                                        <div className="value">{borrowedBooks}</div>
+                                    </div>
+                                    <div className="card">
+                                        <h3>Books Available</h3>
+                                        <div className="value">{availableBooks}</div>
+                                    </div>
+                                </div>
+                                
+                                {currentUser.role === 'admin' ? (
+                                    <div className="section">
+                                        <div className="section-header">
+                                            <h2 className="section-title">Recent Transactions</h2>
+                                            <div>
+                                                <button 
+                                                    className="btn btn-success" 
+                                                    onClick={() => setShowLendModal(true)}
+                                                >
+                                                    Lend Book
+                                                </button>
+                                                <button 
+                                                    className="btn" 
+                                                    onClick={() => setShowReturnModal(true)}
+                                                    style={{marginLeft: '10px'}}
+                                                >
+                                                    Return Book
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        {transactions.length > 0 ? (
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th>Book</th>
+                                                        <th>Member</th>
+                                                        <th>Issue Date</th>
+                                                        <th>Due Date</th>
+                                                        <th>Return Date</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {transactions.slice(0, 5).map(transaction => (
+                                                        <tr key={transaction.id}>
+                                                            <td>{transaction.bookTitle}</td>
+                                                            <td>{transaction.memberName}</td>
+                                                            <td>{transaction.issueDate}</td>
+                                                            <td>{transaction.dueDate}</td>
+                                                            <td>{transaction.returnDate || 'Not returned'}</td>
+                                                            <td>
+                                                                {transaction.returnDate ? (
+                                                                    <span className="status-available">Returned</span>
+                                                                ) : (
+                                                                    <span className="status-borrowed">Borrowed</span>
+                                                                )}
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        ) : (
+                                            <div className="empty-state">
+                                                <p>No transactions yet. Start by lending a book.</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div className="section">
+                                        <div className="section-header">
+                                            <h2 className="section-title">My Borrowed Books</h2>
+                                        </div>
+                                        
+                                        {getUserBorrowedBooks().length > 0 ? (
+                                            <div className="books-grid">
+                                                {getUserBorrowedBooks().map(transaction => (
+                                                    <div key={transaction.id} className="book-card">
+                                                        <div className="book-cover">
+                                                            {transaction.bookTitle}
+                                                        </div>
+                                                        <div className="book-title">{transaction.bookTitle}</div>
+                                                        <div className="book-author">by {transaction.book.author}</div>
+                                                        <div className="book-details">
+                                                            <span>Issued: {transaction.issueDate}</span>
+                                                            <span>Due: {transaction.dueDate}</span>
+                                                        </div>
+                                                        <div className="book-actions">
+                                                            <button 
+                                                                className="btn"
+                                                                onClick={() => handleUserReturnBook(transaction.id)}
+                                                            >
+                                                                Return Book
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="empty-state">
+                                                <p>You haven't borrowed any books yet.</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                        
+                        {activeTab === 'books' && (
+                            <div className="section">
+                                <div className="section-header">
+                                    <h2 className="section-title">
+                                        {currentUser.role === 'admin' ? 'Books Management' : 'Browse Books'}
+                                    </h2>
+                                    <div style={{display: 'flex', alignItems: 'center', gap: '15px'}}>
+                                        <div className="search-bar">
+                                            <input 
+                                                type="text" 
+                                                placeholder="Search books by title, author, ISBN, or genre..." 
+                                                value={searchTerm}
+                                                onChange={(e) => setSearchTerm(e.target.value)}
+                                            />
+                                        </div>
+                                        {currentUser.role === 'admin' && (
+                                            <>
+                                                <div className="view-toggle">
+                                                    <button 
+                                                        className={`toggle-btn ${viewMode === 'cards' ? 'active' : ''}`}
+                                                        onClick={() => setViewMode('cards')}
+                                                    >
+                                                        Cards
+                                                    </button>
+                                                    <button 
+                                                        className={`toggle-btn ${viewMode === 'table' ? 'active' : ''}`}
+                                                        onClick={() => setViewMode('table')}
+                                                    >
+                                                        Table
+                                                    </button>
+                                                </div>
+                                                <button 
+                                                    className="btn" 
+                                                    onClick={() => {
+                                                        resetBookForm();
+                                                        setShowBookModal(true);
+                                                    }}
+                                                >
+                                                    Add New Book
+                                                </button>
+                                                {!sampleBooksLoaded && (
+                                                    <button 
+                                                        className="btn btn-warning" 
+                                                        onClick={loadSampleBooks}
+                                                    >
+                                                        Load Books
+                                                    </button>
+                                                )}
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                                
+                                {filteredBooks.length > 0 ? (
+                                    currentUser.role === 'admin' ? (
+                                        viewMode === 'cards' ? (
+                                            renderBookCards(filteredBooks, true)
+                                        ) : (
+                                            renderBookTable(filteredBooks)
+                                        )
+                                    ) : (
+                                        renderBookCards(filteredBooks)
+                                    )
+                                ) : (
+                                    <div className="empty-state">
+                                        <p>No books found matching your search.</p>
+                                        {currentUser.role === 'admin' && !sampleBooksLoaded && (
+                                            <button 
+                                                className="btn btn-warning" 
+                                                onClick={loadSampleBooks}
+                                                style={{marginTop: '15px'}}
+                                            >
+                                                Load Sample Books
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                        
+                        {activeTab === 'members' && currentUser.role === 'admin' && (
+                            <div className="section">
+                                <div className="section-header">
+                                    <h2 className="section-title">Members Management</h2>
+                                    <button 
+                                        className="btn" 
+                                        onClick={() => {
+                                            resetMemberForm();
+                                            setShowMemberModal(true);
+                                        }}
+                                    >
+                                        Add New Member
+                                    </button>
+                                </div>
+                                
+                                {members.length > 0 ? (
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Phone</th>
+                                                <th>Address</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {members.map(member => (
+                                                <tr key={member.id}>
+                                                    <td>{member.name}</td>
+                                                    <td>{member.email}</td>
+                                                    <td>{member.phone}</td>
+                                                    <td>{member.address}</td>
+                                                    <td>
+                                                        <div className="action-buttons">
+                                                            <button 
+                                                                className="btn btn-secondary"
+                                                                onClick={() => handleEditMember(member)}
+                                                            >
+                                                                Edit
+                                                            </button>
+                                                            <button 
+                                                                className="btn btn-danger"
+                                                                onClick={() => handleDeleteMember(member.id)}
+                                                            >
+                                                                Delete
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                ) : (
+                                    <div className="empty-state">
+                                        <p>No members found. Add some members to get started.</p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                        
+                        {activeTab === 'transactions' && (
+                            <div className="section">
+                                <div className="section-header">
+                                    <h2 className="section-title">
+                                        {currentUser.role === 'admin' ? 'Transaction History' : 'My Books'}
+                                    </h2>
+                                    {currentUser.role === 'admin' && (
+                                        <div>
+                                            <button 
+                                                className="btn btn-success" 
+                                                onClick={() => setShowLendModal(true)}
+                                            >
+                                                Lend Book
+                                            </button>
+                                            <button 
+                                                className="btn" 
+                                                onClick={() => setShowReturnModal(true)}
+                                                style={{marginLeft: '10px'}}
+                                            >
+                                                Return Book
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                                
+                                {currentUser.role === 'admin' ? (
+                                    transactions.length > 0 ? (
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Book</th>
+                                                    <th>Member</th>
+                                                    <th>Issue Date</th>
+                                                    <th>Due Date</th>
+                                                    <th>Return Date</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {transactions.map(transaction => (
+                                                    <tr key={transaction.id}>
+                                                        <td>{transaction.bookTitle}</td>
+                                                        <td>{transaction.memberName}</td>
+                                                        <td>{transaction.issueDate}</td>
+                                                        <td>{transaction.dueDate}</td>
+                                                        <td>{transaction.returnDate || 'Not returned'}</td>
+                                                        <td>
+                                                            {transaction.returnDate ? (
+                                                                <span className="status-available">Returned</span>
+                                                            ) : (
+                                                                <span className="status-borrowed">Borrowed</span>
+                                                            )}
+                                                        </td>
+                                                        <td>
+                                                            {!transaction.returnDate && (
+                                                                <button 
+                                                                    className="btn"
+                                                                    onClick={() => handleReturnBook(transaction.id)}
+                                                                >
+                                                                    Mark Returned
+                                                                </button>
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    ) : (
+                                        <div className="empty-state">
+                                            <p>No transactions yet. Start by lending a book.</p>
+                                        </div>
+                                    )
+                                ) : (
+                                    <div>
+                                        <h3 style={{marginBottom: '20px'}}>My Borrowed Books</h3>
+                                        {getUserBorrowedBooks().length > 0 ? (
+                                            <div className="books-grid">
+                                                {getUserBorrowedBooks().map(transaction => (
+                                                    <div key={transaction.id} className="book-card">
+                                                        <div className="book-cover">
+                                                            {transaction.bookTitle}
+                                                        </div>
+                                                        <div className="book-title">{transaction.bookTitle}</div>
+                                                        <div className="book-author">by {transaction.book.author}</div>
+                                                        <div className="book-details">
+                                                            <span>Issued: {transaction.issueDate}</span>
+                                                            <span>Due: {transaction.dueDate}</span>
+                                                        </div>
+                                                        <div className="book-actions">
+                                                            <button 
+                                                                className="btn"
+                                                                onClick={() => handleUserReturnBook(transaction.id)}
+                                                            >
+                                                                Return Book
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="empty-state">
+                                                <p>You haven't borrowed any books yet.</p>
+                                            </div>
+                                        )}
+                                        
+                                        <h3 style={{margin: '30px 0 20px 0'}}>My Reading History</h3>
+                                        {transactions
+                                            .filter(t => {
+                                                const userMember = members.find(m => m.email === currentUser.username);
+                                                return userMember && t.memberId === userMember.id && t.returnDate;
+                                            })
+                                            .length > 0 ? (
+                                            <div className="books-grid">
+                                                {transactions
+                                                    .filter(t => {
+                                                        const userMember = members.find(m => m.email === currentUser.username);
+                                                        return userMember && t.memberId === userMember.id && t.returnDate;
+                                                    })
+                                                    .map(transaction => {
+                                                        const book = books.find(b => b.id === transaction.bookId);
+                                                        return book ? (
+                                                            <div key={transaction.id} className="book-card">
+                                                                <div className="book-cover">
+                                                                    {transaction.bookTitle}
+                                                                </div>
+                                                                <div className="book-title">{transaction.bookTitle}</div>
+                                                                <div className="book-author">by {book.author}</div>
+                                                                <div className="book-details">
+                                                                    <span>Issued: {transaction.issueDate}</span>
+                                                                    <span>Returned: {transaction.returnDate}</span>
+                                                                </div>
+                                                            </div>
+                                                        ) : null;
+                                                    })
+                                                    .filter(Boolean)
+                                                }
+                                            </div>
+                                        ) : (
+                                            <div className="empty-state">
+                                                <p>You haven't returned any books yet.</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                    
+                    {/* Book Modal (Admin only) */}
+                    {showBookModal && currentUser.role === 'admin' && (
+                        <div className="modal">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h3 className="modal-title">
+                                        {editingBook ? 'Edit Book' : 'Add New Book'}
+                                    </h3>
+                                    <button className="close" onClick={() => {
+                                        setShowBookModal(false);
+                                        resetBookForm();
+                                    }}>×</button>
+                                </div>
+                                <div className="form-group">
+                                    <label>Title</label>
+                                    <input 
+                                        type="text" 
+                                        value={bookForm.title}
+                                        onChange={(e) => setBookForm({...bookForm, title: e.target.value})}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Author</label>
+                                    <input 
+                                        type="text" 
+                                        value={bookForm.author}
+                                        onChange={(e) => setBookForm({...bookForm, author: e.target.value})}
+                                    />
+                                </div>
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label>ISBN</label>
+                                        <input 
+                                            type="text" 
+                                            value={bookForm.isbn}
+                                            onChange={(e) => setBookForm({...bookForm, isbn: e.target.value})}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Publication Year</label>
+                                        <input 
+                                            type="number" 
+                                            value={bookForm.publicationYear}
+                                            onChange={(e) => setBookForm({...bookForm, publicationYear: e.target.value})}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="form-row">
+                                    <div className="form-group">
+                                        <label>Category</label>
+                                        <input 
+                                            type="text" 
+                                            value={bookForm.category}
+                                            onChange={(e) => setBookForm({...bookForm, category: e.target.value})}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Total Copies</label>
+                                        <input 
+                                            type="number" 
+                                            min="1"
+                                            value={bookForm.totalCopies}
+                                            onChange={(e) => setBookForm({...bookForm, totalCopies: parseInt(e.target.value) || 1})}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="form-group" style={{textAlign: 'right'}}>
+                                    <button 
+                                        className="btn btn-secondary" 
+                                        onClick={() => {
+                                            setShowBookModal(false);
+                                            resetBookForm();
+                                        }}
+                                        style={{marginRight: '10px'}}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button 
+                                        className="btn" 
+                                        onClick={handleAddBook}
+                                        disabled={!bookForm.title || !bookForm.author}
+                                    >
+                                        {editingBook ? 'Update Book' : 'Add Book'}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    
+                    {/* Member Modal (Admin only) */}
+                    {showMemberModal && currentUser.role === 'admin' && (
+                        <div className="modal">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h3 className="modal-title">
+                                        {editingMember ? 'Edit Member' : 'Add New Member'}
+                                    </h3>
+                                    <button className="close" onClick={() => {
+                                        setShowMemberModal(false);
+                                        resetMemberForm();
+                                    }}>×</button>
+                                </div>
+                                <div className="form-group">
+                                    <label>Name</label>
+                                    <input 
+                                        type="text" 
+                                        value={memberForm.name}
+                                        onChange={(e) => setMemberForm({...memberForm, name: e.target.value})}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Email</label>
+                                    <input 
+                                        type="email" 
+                                        value={memberForm.email}
+                                        onChange={(e) => setMemberForm({...memberForm, email: e.target.value})}
+                                        readOnly={!!editingMember}
+                                    />
+                                    {editingMember && (
+                                        <div className="password-info">Email cannot be changed for existing members</div>
+                                    )}
+                                </div>
+                                <div className="form-group">
+                                    <label>Phone</label>
+                                    <input 
+                                        type="text" 
+                                        value={memberForm.phone}
+                                        onChange={(e) => setMemberForm({...memberForm, phone: e.target.value})}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Address</label>
+                                    <input 
+                                        type="text" 
+                                        value={memberForm.address}
+                                        onChange={(e) => setMemberForm({...memberForm, address: e.target.value})}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Password {!editingMember && "(Required)"}</label>
+                                    <input 
+                                        type="password" 
+                                        value={memberForm.password}
+                                        onChange={(e) => setMemberForm({...memberForm, password: e.target.value})}
+                                        placeholder={editingMember ? "Leave blank to keep current password" : "Enter password for login"}
+                                    />
+                                    <div className="password-info">
+                                        {editingMember 
+                                            ? "Leave blank to keep current password" 
+                                            : "This password will be used for member login"
+                                        }
+                                    </div>
+                                </div>
+                                <div className="form-group" style={{textAlign: 'right'}}>
+                                    <button 
+                                        className="btn btn-secondary" 
+                                        onClick={() => {
+                                            setShowMemberModal(false);
+                                            resetMemberForm();
+                                        }}
+                                        style={{marginRight: '10px'}}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button 
+                                        className="btn" 
+                                        onClick={handleAddMember}
+                                        disabled={!memberForm.name || !memberForm.email || (!editingMember && !memberForm.password)}
+                                    >
+                                        {editingMember ? 'Update Member' : 'Add Member'}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    
+                    {/* Lend Book Modal (Admin only) */}
+                    {showLendModal && currentUser.role === 'admin' && (
+                        <div className="modal">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h3 className="modal-title">Lend Book</h3>
+                                    <button className="close" onClick={() => {
+                                        setShowLendModal(false);
+                                        resetLendForm();
+                                    }}>×</button>
+                                </div>
+                                <div className="form-group">
+                                    <label>Select Book</label>
+                                    <select 
+                                        value={lendForm.bookId}
+                                        onChange={(e) => setLendForm({...lendForm, bookId: e.target.value})}
+                                    >
+                                        <option value="">Choose a book</option>
+                                        {books
+                                            .filter(book => book.availableCopies > 0)
+                                            .map(book => (
+                                                <option key={book.id} value={book.id}>
+                                                    {book.title} by {book.author} ({book.availableCopies} available)
+                                                </option>
+                                            ))
+                                        }
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label>Select Member</label>
+                                    <select 
+                                        value={lendForm.memberId}
+                                        onChange={(e) => setLendForm({...lendForm, memberId: e.target.value})}
+                                    >
+                                        <option value="">Choose a member</option>
+                                        {members.map(member => (
+                                            <option key={member.id} value={member.id}>
+                                                {member.name} ({member.email})
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label>Due Date</label>
+                                    <input 
+                                        type="date" 
+                                        min={today}
+                                        value={lendForm.dueDate}
+                                        onChange={(e) => setLendForm({...lendForm, dueDate: e.target.value})}
+                                    />
+                                </div>
+                                <div className="form-group" style={{textAlign: 'right'}}>
+                                    <button 
+                                        className="btn btn-secondary" 
+                                        onClick={() => {
+                                            setShowLendModal(false);
+                                            resetLendForm();
+                                        }}
+                                        style={{marginRight: '10px'}}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button 
+                                        className="btn btn-success" 
+                                        onClick={handleLendBook}
+                                        disabled={!lendForm.bookId || !lendForm.memberId || !lendForm.dueDate}
+                                    >
+                                        Lend
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    
+                    {/* Return Book Modal (Admin only) */}
+                    {showReturnModal && currentUser.role === 'admin' && (
+                        <div className="modal">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h3 className="modal-title">Return Book</h3>
+                                    <button className="close" onClick={() => setShowReturnModal(false)}>×</button>
+                                </div>
+                                <div className="form-group">
+                                    <label>Select Transaction</label>
+                                    <select 
+                                        onChange={(e) => {
+                                            if (e.target.value) {
+                                                handleReturnBook(e.target.value);
+                                            }
+                                        }}
+                                    >
+                                        <option value="">Choose a transaction to return</option>
+                                        {transactions
+                                            .filter(transaction => !transaction.returnDate)
+                                            .map(transaction => (
+                                                <option key={transaction.id} value={transaction.id}>
+                                                    {transaction.bookTitle} borrowed by {transaction.memberName} (Due: {transaction.dueDate})
+                                                </option>
+                                            ))
+                                        }
+                                    </select>
+                                </div>
+                                <div className="form-group" style={{textAlign: 'right'}}>
+                                    <button 
+                                        className="btn btn-secondary" 
+                                        onClick={() => setShowReturnModal(false)}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // Render the application
+        ReactDOM.render(<LibraryManagementSystem />, document.getElementById('root'));
+    </script>
+</body>
+</html>
